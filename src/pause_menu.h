@@ -13,6 +13,8 @@ typedef struct PauseMenu {
     int opt_fontsize;
     int selected;
     Sound opt_sound;
+    bool opened;
+    Sound open_sound;
     Vector2 arrow;
     int arrow_size;
 } PauseMenu;

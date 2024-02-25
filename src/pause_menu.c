@@ -2,16 +2,16 @@
 #include "pause_menu.h"
 
 #define TITLE_FONTSIZE 40
-#define TITLE_COLOR 0x828282
+#define TITLE_COLOR 0x828282FF
 
 #define OPT_FONTSIZE 50
-#define OPT_COLOR 0xFFFFFF
+#define OPT_COLOR 0xFFFFFFFF
 
 #define TITLE_Y 100
 #define CONTINUE_Y 300
 #define QUIT_Y 400
 
-#define BG_COLOR 0x000000
+#define BG_COLOR 0x000000FF
 #define BG_COLOR_FADE .9f
 
 #define ARROW_GAP 20
@@ -27,33 +27,34 @@ PauseMenu CreatePauseMenu(int scrW) {
     return (PauseMenu) {
         .t_fontsize = TITLE_FONTSIZE,
         .opt_fontsize = OPT_FONTSIZE,
-        .t_pos = (Vector2) {(scrW / 2) - (MeasureText(t_text, TITLE_FONTSIZE) / 2), TITLE_Y},
-        .c_pos = (Vector2) {(scrW / 2) - (MeasureText(c_text, OPT_FONTSIZE) / 2), CONTINUE_Y},
-        .q_pos = (Vector2) {(scrW / 2) - (MeasureText(q_text, OPT_FONTSIZE) / 2), QUIT_Y},
+        .t_pos = (Vector2) { (scrW / 2) - (MeasureText(t_text, TITLE_FONTSIZE) / 2), TITLE_Y },
+        .c_pos = (Vector2) { (scrW / 2) - (MeasureText(c_text, OPT_FONTSIZE) / 2), CONTINUE_Y },
+        .q_pos = (Vector2) { (scrW / 2) - (MeasureText(q_text, OPT_FONTSIZE) / 2), QUIT_Y },
         .selected = 0,
         .opt_sound = LoadSound("assets/pause_menu_opt.wav"),
         .active = false,
         .quit = false,
         .arrow = (Vector2) {0, -100},
         .arrow_size = MeasureText(a_text, OPT_FONTSIZE),
+        .opened = true,
+        .open_sound = LoadSound("assets/pause_menu_open.wav"),
     };
 }
 
 void UpdatePauseMenu(PauseMenu *menu) {
-    if (IsKeyPressed(KEY_DOWN)) {
-        if (++menu->selected == 2) menu->selected = CONTINUE;
+    if (menu->opened) {
+        menu->opened = false;
+        PlaySound(menu->open_sound);
+    }
+
+    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_UP)) {
+        menu->selected = (menu->selected == CONTINUE) ? QUIT : CONTINUE;
         PlaySound(menu->opt_sound);
 
-    } else if(IsKeyPressed(KEY_UP)) {
-        if (--menu->selected == -1) menu->selected = QUIT;
-        PlaySound(menu->opt_sound);
-
-    } else if (IsKeyPressed(KEY_ENTER)) {
+    } else if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
         if (menu->selected == QUIT) menu->quit = true;
         menu->active = false;
-
-    } else if (IsKeyPressed(KEY_ESCAPE)) {
-        menu->active = false;
+        menu->opened = true;
         menu->selected = CONTINUE;
     }
 
@@ -71,4 +72,5 @@ void DrawPauseMenu(PauseMenu *menu) {
 
 void UnloadPauseMenu(PauseMenu *menu) {
     UnloadSound(menu->opt_sound);
+    UnloadSound(menu->open_sound);
 }
