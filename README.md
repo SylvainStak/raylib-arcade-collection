@@ -1,6 +1,6 @@
 # Raylib Arcade Collection 👾
 
-Lightweight collection of arcade game clones within the same executable using the Raylib library and the C programming language.
+Lightweight collection of arcade game clones within the same executable using the [Raylib](https://github.com/raysan5/raylib) library and the C programming language.
 
 ## 🚧 Work in Progress 🚧
 
