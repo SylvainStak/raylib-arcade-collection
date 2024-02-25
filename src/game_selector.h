@@ -6,5 +6,6 @@ void (*UpdateGameSelector(int))(void);
 void (*DrawGameSelector(int))(void);
 void (*UnloadGameSelector(int))(void);
 bool (*IsFinishedGameSelector(int))(void);
+void GameSelector(int game_id, void (**load)(), void (**update)(), void (**draw)(), void (**unload)(), bool (**finished)());
 
 #endif

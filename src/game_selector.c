@@ -46,3 +46,11 @@ bool (*IsFinishedGameSelector(int game_id))(void) {
         default: return NULL;
     }
 }
+
+void GameSelector(int game_id, void (**load)(), void (**update)(), void (**draw)(), void (**unload)(), bool (**finished)()) {
+    *load = LoadGameSelector(game_id);
+    *update = UpdateGameSelector(game_id);
+    *draw = DrawGameSelector(game_id);
+    *unload = UnloadGameSelector(game_id);
+    *finished = IsFinishedGameSelector(game_id);
+}

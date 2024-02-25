@@ -21,28 +21,23 @@ int main() {
         if (sm.menu_active) {
             UpdateStartMenu(&sm);
             DrawStartMenu(&sm);
-        } else {
-            if (!sm.game_active) {
-                // Set functions for selected game
-                LoadGame = LoadGameSelector(sm.item_selected);
-                UpdateGame = UpdateGameSelector(sm.item_selected);
-                DrawGame = DrawGameSelector(sm.item_selected);
-                UnloadGame = UnloadGameSelector(sm.item_selected);
-                IsFinishedGame = IsFinishedGameSelector(sm.item_selected);
-                // GameSelector(sm.item_selected, &LoadGame, &UpdateGame, &DrawGame, &UnloadGame, &IsFinishedGame);
+            continue;
+        }
 
-                sm.game_active = true;
-                LoadGame();
-            } else {
-                // Shared game loop logic
-                UpdateGame();
-                DrawGame();
-                if (IsFinishedGame()) {
-                    UnloadGame();
-                    sm.game_active = false;
-                    sm.menu_active = true;
-                    FitWindowToMonitor(sm.scr_w, sm.scr_h);
-                }
+        if (!sm.game_active) {
+            // Bind functions for selected game
+            GameSelector(sm.item_selected, &LoadGame, &UpdateGame, &DrawGame, &UnloadGame, &IsFinishedGame);
+            sm.game_active = true;
+            LoadGame();
+        } else {
+            // Shared game loop logic
+            UpdateGame();
+            DrawGame();
+            if (IsFinishedGame()) {
+                UnloadGame();
+                sm.game_active = false;
+                sm.menu_active = true;
+                FitWindowToMonitor(sm.scr_w, sm.scr_h);
             }
         }
     }
