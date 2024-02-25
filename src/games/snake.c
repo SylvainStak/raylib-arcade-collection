@@ -1,56 +1,58 @@
 #include "../shared.h"
 #include "../pause_menu.h"
 
-typedef struct GameManagerSnake {
-    int scr_w;
-    int scr_h;
-    bool running;
-    char text1[64];
-    Vector2 text1_pos;
-    Color text1_clr;
-    int text_fontsize;
-    PauseMenu pause_menu;
-} GameManagerSnake;
-
-static GameManagerSnake gm = { 0 };
+static int scr_w;
+static int scr_h;
+static bool running;
+static PauseMenu pause_menu;
+static Vector2 pos;
+static float radius;
+static float speed;
+static short dirX;
+static short dirY;
 
 void LoadSnake() {
-    strcpy(gm.text1, "SNAKE\0");
-
-    gm.scr_w = 1024;
-    gm.scr_h = 768;
-    gm.text_fontsize = 50;
-    gm.text1_pos = (Vector2) { (gm.scr_w/2) - (MeasureText(gm.text1, gm.text_fontsize)/2), 200 };
-    gm.text1_clr = GREEN;
-    gm.running = true;
-    gm.pause_menu = CreatePauseMenu(gm.scr_w);
-    FitWindowToMonitor(gm.scr_w, gm.scr_h);
+    scr_w = 1024;
+    scr_h = 768;
+    running = true;
+    pause_menu = CreatePauseMenu(scr_w);
+    pos = (Vector2) { GetScreenWidth() / 2, GetScreenHeight() / 2 };
+    radius = 15.f;
+    speed = 100.f;
+    dirX = 1;
+    dirY = 1;
+    FitWindowToMonitor(scr_w, scr_h);
 }
 
 void UpdateSnake() {
-    if (gm.pause_menu.active) {
-        UpdatePauseMenu(&gm.pause_menu);
-        if (gm.pause_menu.quit) {
-            gm.running = false;
+    if (pause_menu.active) {
+        UpdatePauseMenu(&pause_menu);
+        if (pause_menu.quit) {
+            running = false;
         }
         return;
     }
 
-    if (IsKeyPressed(KEY_ESCAPE)) gm.pause_menu.active = true;
+    pos.x += speed * dirX * GetFrameTime();
+    pos.y += speed * dirY * GetFrameTime();
+
+    if (pos.x + radius > GetScreenWidth() || pos.x - radius < 0) dirX = -dirX;
+    if (pos.y + radius > GetScreenHeight() || pos.y - radius < 0) dirY = -dirY;
+
+    if (IsKeyPressed(KEY_ESCAPE)) pause_menu.active = true;
 }
 
 void DrawSnake() {
     BeginDrawing();
     ClearBackground(BLACK);
-    DrawText(gm.text1, gm.text1_pos.x, gm.text1_pos.y, gm.text_fontsize, gm.text1_clr);
+    DrawCircle(pos.x, pos.y, radius, GREEN);
 
-    if (gm.pause_menu.active) DrawPauseMenu(&gm.pause_menu);
+    if (pause_menu.active) DrawPauseMenu(&pause_menu);
     EndDrawing();
 }
 
 void UnloadSnake() {
-    UnloadPauseMenu(&gm.pause_menu);
-    gm = (GameManagerSnake){ 0 };
+    UnloadPauseMenu(&pause_menu);
 }
 
-bool IsFinishedSnake() { return !gm.running; }
+bool IsFinishedSnake() { return !running; }
