@@ -9,7 +9,7 @@ This project is currently under active development.
 ## Project Goals:
 
 - **Game Collection:** Incorporate a total of 7 arcade game clones.
-- **Platforms:** For now only Windows x64 will be available.
+- **Platforms:** For now only Windows x64 will be available. Might add other platforms supported by raylib later.
 
 ### 🎯 Current Games Progress 🎯
 
