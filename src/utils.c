@@ -9,9 +9,13 @@ void FitWindowToMonitor(int width, int height) {
     SetWindowPosition((int) new_loc.x, (int) new_loc.y);
 }
 
-float SyncedSineWave(float min, float max, float frequency) {
+float SineWave(float min, float max, float freq, float dt) {
     float amplitude = (max - min) / 2.f;
     float v_shift = (max + min) / 2.f;
-    float wave_dt = sin(2 * PI * frequency * GetTime());
-    return (amplitude * wave_dt) + v_shift;
+    float wave_dt = sin(2 * PI * freq * dt);
+    return amplitude * wave_dt + v_shift;
+}
+
+float SyncedSineWave(float min, float max, float freq) {
+    return SineWave(min, max, freq, GetTime());
 }

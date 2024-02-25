@@ -23,15 +23,18 @@ int main() {
             DrawStartMenu(&sm);
         } else {
             if (!sm.game_active) {
+                // Set functions for selected game
                 LoadGame = LoadGameSelector(sm.item_selected);
                 UpdateGame = UpdateGameSelector(sm.item_selected);
                 DrawGame = DrawGameSelector(sm.item_selected);
                 UnloadGame = UnloadGameSelector(sm.item_selected);
                 IsFinishedGame = IsFinishedGameSelector(sm.item_selected);
+                // GameSelector(sm.item_selected, &LoadGame, &UpdateGame, &DrawGame, &UnloadGame, &IsFinishedGame);
 
                 sm.game_active = true;
                 LoadGame();
             } else {
+                // Shared game loop logic
                 UpdateGame();
                 DrawGame();
                 if (IsFinishedGame()) {
