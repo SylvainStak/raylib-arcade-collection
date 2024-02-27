@@ -39,7 +39,7 @@ void UpdateSnake() {
     if (pos.x + radius > GetScreenWidth() || pos.x - radius < 0) dirX = -dirX;
     if (pos.y + radius > GetScreenHeight() || pos.y - radius < 0) dirY = -dirY;
 
-    if (IsKeyPressed(KEY_ESCAPE)) pause_menu.active = true;
+    if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_MIDDLE_RIGHT)) pause_menu.active = true;
 }
 
 void DrawSnake() {

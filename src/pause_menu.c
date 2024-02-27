@@ -23,6 +23,8 @@ static const char *c_text = "CONTINUE";
 static const char *q_text = "QUIT";
 static const char *a_text = ">";
 
+static void ResetPauseMenu(PauseMenu *menu);
+
 PauseMenu CreatePauseMenu(int scrW) {
     return (PauseMenu) {
         .t_fontsize = TITLE_FONTSIZE,
@@ -47,15 +49,16 @@ void UpdatePauseMenu(PauseMenu *menu) {
         PlaySound(menu->open_sound);
     }
 
-    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_UP)) {
+    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_LEFT_FACE_DOWN) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_LEFT_FACE_UP) || IsGamepadLeftJoystickHolded(GAMEPAD_ID, GAMEPAD_AXIS_LEFT_DOWN) || IsGamepadLeftJoystickHolded(GAMEPAD_ID, GAMEPAD_AXIS_LEFT_UP)) {
         menu->selected = (menu->selected == CONTINUE) ? QUIT : CONTINUE;
         PlaySound(menu->opt_sound);
 
-    } else if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+    } else if (IsKeyPressed(KEY_ENTER) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
         if (menu->selected == QUIT) menu->quit = true;
-        menu->active = false;
-        menu->opened = true;
-        menu->selected = CONTINUE;
+        ResetPauseMenu(menu);
+
+    } else if (IsKeyPressed(KEY_ESCAPE) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_MIDDLE_RIGHT) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_RIGHT_FACE_RIGHT)) {
+        ResetPauseMenu(menu);
     }
 
     Vector2 ref_pos = menu->selected == CONTINUE ? menu->c_pos : menu->q_pos;
@@ -73,4 +76,10 @@ void DrawPauseMenu(PauseMenu *menu) {
 void UnloadPauseMenu(PauseMenu *menu) {
     UnloadSound(menu->opt_sound);
     UnloadSound(menu->open_sound);
+}
+
+void ResetPauseMenu(PauseMenu *menu) {
+    menu->active = false;
+    menu->opened = true;
+    menu->selected = CONTINUE;
 }

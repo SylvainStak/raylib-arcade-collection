@@ -37,16 +37,15 @@ void LoadStartMenu(StartMenu *menu) {
 }
 
 void UpdateStartMenu(StartMenu *menu) {
-
-    if (IsKeyPressed(KEY_DOWN)) {
+    if (IsKeyPressed(KEY_DOWN) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_LEFT_FACE_DOWN) || IsGamepadLeftJoystickHolded(GAMEPAD_ID, GAMEPAD_AXIS_LEFT_DOWN)) {
         if (++menu->item_selected == GAMES_COUNT) menu->item_selected = 0;
         PlaySound(menu->item_sound);
 
-    } else if(IsKeyPressed(KEY_UP)) {
+    } else if(IsKeyPressed(KEY_UP) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_LEFT_FACE_UP) || IsGamepadLeftJoystickHolded(GAMEPAD_ID, GAMEPAD_AXIS_LEFT_UP) ) {
         if (--menu->item_selected == -1) menu->item_selected = GAMES_COUNT-1;
         PlaySound(menu->item_sound);
 
-    } else if (IsKeyPressed(KEY_ENTER)) {
+    } else if (IsKeyPressed(KEY_ENTER) || IsGamepadButtonPressed(GAMEPAD_ID, GAMEPAD_BUTTON_RIGHT_FACE_DOWN)) {
         menu->menu_active = false;
     }
 
@@ -60,7 +59,6 @@ void UpdateStartMenu(StartMenu *menu) {
         }
         menu->items[i].pos.x = (menu->scr_w/2) - (MeasureText(menu->items[i].text, menu->items[i].fontsize)/2);
     }
-    
 }
 
 void DrawStartMenu(StartMenu *menu) {
