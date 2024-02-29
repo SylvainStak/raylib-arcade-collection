@@ -16,6 +16,10 @@ void LoadStartMenu(StartMenu *menu) {
         .x = (menu->scr_w/2) - (MeasureText(hint_text, menu->hint_text_fontsize)/2),
         .y = 10.f,
     };
+    menu->xbox_gpad_texture = LoadTexture("assets/gamepad_xbox.png");
+    menu->playstation_gpad_texture = LoadTexture("assets/gamepad_ps.png");
+    menu->current_gpad_texture = &menu->xbox_gpad_texture;
+    menu->gpad_detected = false;
 
     int posY = -20;
     char *sm_item_list[] = {
@@ -59,6 +63,9 @@ void UpdateStartMenu(StartMenu *menu) {
         }
         menu->items[i].pos.x = (menu->scr_w/2) - (MeasureText(menu->items[i].text, menu->items[i].fontsize)/2);
     }
+
+    menu->gpad_detected = IsGamepadAvailable(GAMEPAD_ID);
+    menu->current_gpad_texture = TextFindIndex(TextToLower(GetGamepadName(GAMEPAD_ID)), "xbox") >= 0 ? &menu->xbox_gpad_texture : &menu->playstation_gpad_texture;
 }
 
 void DrawStartMenu(StartMenu *menu) {
@@ -68,9 +75,17 @@ void DrawStartMenu(StartMenu *menu) {
     for (int i = 0; i < GAMES_COUNT; i++) {
         DrawText(menu->items[i].text, menu->items[i].pos.x, menu->items[i].pos.y, menu->items[i].fontsize, menu->items[i].clr);
     }
+
+    if (menu->gpad_detected) {
+        DrawTextureEx(*menu->current_gpad_texture, (Vector2) { 0, 720 }, 0, .1f, WHITE);
+        DrawText("Gamepad detected", 75, 732, 20, WHITE);
+    }
+
     EndDrawing();
 }
 
 void UnloadStartMenu(StartMenu *menu) {
     UnloadSound(menu->item_sound);
+    UnloadTexture(menu->xbox_gpad_texture);
+    UnloadTexture(menu->playstation_gpad_texture);
 }

@@ -22,6 +22,10 @@ typedef struct StartMenu {
     Color hint_text_clr;
     Vector2 hint_text_pos;
     StartMenuItem items[GAMES_COUNT];
+    Texture2D xbox_gpad_texture;
+    Texture2D playstation_gpad_texture;
+    Texture2D *current_gpad_texture;
+    bool gpad_detected;
 } StartMenu;
 
 void LoadStartMenu(StartMenu *menu);
