@@ -1,6 +1,9 @@
 #include "../shared.h"
 #include "../pause_menu.h"
 
+#define RAYGUI_IMPLEMENTATION
+#include "../raygui.h"
+
 static int scr_w;
 static int scr_h;
 static bool running;
@@ -48,6 +51,8 @@ void DrawSnake() {
     DrawCircle(pos.x, pos.y, radius, GREEN);
 
     if (pause_menu.active) DrawPauseMenu(&pause_menu);
+
+    GuiSliderBar((Rectangle) {100, 500, 300, 20}, "10", "100", &radius, 10.f, 100.f);
     EndDrawing();
 }
 
