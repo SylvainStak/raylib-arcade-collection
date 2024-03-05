@@ -8,37 +8,38 @@ int main() {
     SetTargetFPS(60);
     SetExitKey(KEY_Q);
 
-    void (*LoadGame)(void) = NULL;
-    void (*UpdateGame)(void) = NULL;
-    void (*DrawGame)(void) = NULL;
-    void (*UnloadGame)(void) = NULL;
-    bool (*IsFinishedGame)(void) = NULL;
+    void (*LoadGame)(void);
+    void (*UpdateGame)(void);
+    void (*DrawGame)(void);
+    void (*UnloadGame)(void);
+    bool (*IsFinishedGame)(void);
 
-    StartMenu sm = { 0 };
+    StartMenu sm;
     LoadStartMenu(&sm);
 
     while (!WindowShouldClose()) {
+        // StartMenu logic
         if (sm.menu_active) {
             UpdateStartMenu(&sm);
             DrawStartMenu(&sm);
             continue;
         }
 
+        // Bind functions and load selected game
         if (!sm.game_active) {
-            // Bind functions for selected game
             GameSelector(sm.item_selected, &LoadGame, &UpdateGame, &DrawGame, &UnloadGame, &IsFinishedGame);
             sm.game_active = true;
             LoadGame();
-        } else {
-            // Shared game loop logic
-            UpdateGame();
-            DrawGame();
-            if (IsFinishedGame()) {
-                UnloadGame();
-                sm.game_active = false;
-                sm.menu_active = true;
-                FitWindowToMonitor(sm.scr_w, sm.scr_h);
-            }
+        }
+
+        // Shared game loop logic
+        UpdateGame();
+        DrawGame();
+        if (IsFinishedGame()) {
+            UnloadGame();
+            sm.game_active = false;
+            sm.menu_active = true;
+            FitWindowToMonitor(sm.scr_w, sm.scr_h);
         }
     }
 
